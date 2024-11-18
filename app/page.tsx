@@ -1,101 +1,85 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useState } from "react";
+
+function formatTime(input: string): string {
+  const inputNumber = parseInt(input);
+  const minutes = Math.floor(inputNumber / 60);
+  const seconds = inputNumber % 60;
+  return `${minutes.toString().padStart(2, "0")}:${seconds
+    .toString()
+    .padStart(2, "0")}`;
+}
+
+export default function CountdownPage() {
+  const [time, setTime] = useState(300);
+  const [isActive, setActive] = useState(false);
+  const [inputTime, setInputTime] = useState("300");
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null; // null이 될 수도 있다
+
+    /* setinterval시에 변수에다 저장해서 중복 실행이 없도록 해야함! */
+
+    if (isActive && time > 0) {
+      interval = setInterval(() => {
+        setTime(time - 1);
+      }, 1000);
+    } else if (time === 0) {
+    }
+
+    return () => {
+      //useEffect가 끝났을 때 반환되는 값
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [isActive, time]);
+  //[isActive, time] : isActive나 time이 바뀌었을 때 실행(or).
+  //그리고 취소가 아니라 동시에 실행되어서 시간이 계속 왔다갔다 하는 것임.
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="w-full h-screen flex items-center ">
+      <div className="flex flex-col items-center w-[400px] mx-auto shadow-lg border rounded-lg p-5 gap-2">
+        <h2 className="text-base font-bold">카운트 다운 타이머</h2>
+        <h1 className="text-4xl font-bold">{formatTime(time.toString())}</h1>
+        <div className="flex gap-2 justify-center">
+          <input
+            className="border px-4 py-2 border-gray-300 rounded-lg"
+            type="number"
+            placeholder="초를 입력하세요"
+            value={inputTime}
+            onChange={(e) => setInputTime(e.target.value)}
+          ></input>
+          <button
+            className="bg-blue-500 text-white px-4 border rounded-lg border border-blue-600 hover:shadow-md transition-all hover:bg-blue-600"
+            onClick={(e) => setTime(parseInt(inputTime))}
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            설정
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="flex gap-2 justify-center">
+          <button
+            className={`flex gap-2 justify-center text-white px-4 border rounded-lg border hover:shadow-md transition-all
+              ${
+                isActive
+                  ? "bg-red-500 hover:bg-red-600 border-red-600"
+                  : "bg-green-500 hover:bg-green-600 border-green-600"
+              }`}
+            onClick={(e) => setActive(!isActive)}
+          >
+            {isActive ? "정지" : "시작"}
+          </button>
+          <button
+            className="flex gap-2 justify-center bg-gray-500 text-white px-4 border rounded-lg border border-gray-600 hover:shadow-md transition-all hover:bg-gray-600"
+            onClick={(e) => {
+              setActive(false), setTime(parseInt(inputTime));
+            }}
+          >
+            리셋
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
